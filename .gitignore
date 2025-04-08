@@ -1,0 +1,18 @@
+# Python bytecode cache
+__pycache__/
+
+# Python virtual environment
+venv/
+
+# Python package build directories
+build/
+django_admin_flexlist.egg-info/
+
+# Testing environment
+.tox/
+
+# Type checking cache
+.mypy_cache/
+
+# SQLite database
+db.sqlite3

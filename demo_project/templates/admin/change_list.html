@@ -1,0 +1,18 @@
+{% extends "admin/change_list.html" %}
+{% block extrahead %}
+{{ block.super }}
+<script>
+  function addCustomLabel() {
+    const span = document.createElement("span");
+    span.innerText = "Custom Label";
+    span.style.marginBottom = "10px";
+    span.style.display = "block";
+    const form = document.getElementById("changelist-form");
+    form.parentNode.insertBefore(span, form);
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    addCustomLabel();
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,72 @@
+[
+  {
+    "model": "users.user",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$260000$g2beig3FKGNvpuEGela4hy$ik/Mm3NdCgsLHv61q+LE0eQ6NuyEG1v7+NF1JRPw1AI=",
+      "last_login": null,
+      "is_superuser": true,
+      "username": "jon.doe",
+      "first_name": "Jon",
+      "last_name": "Doe",
+      "email": "jon.doe@email.com",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2025-04-06T18:35:44.358Z",
+      "dob": "1990-05-15",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": 2,
+    "fields": {
+      "password": "pbkdf2_sha256$260000$s1r4qX7PbnrvRhfHC70Tfn$F6MMa2IwQTalhPbeybmO36CnjLMYvngLQrmebV11Frw=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "jane.doe",
+      "first_name": "Jane",
+      "last_name": "Doe",
+      "email": "jane.doe@email.com",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2025-04-06T18:38:32.392Z",
+      "dob": null,
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "users.user_user_permissions",
+    "pk": 1,
+    "fields": {
+      "user": 2,
+      "permission": 25
+    }
+  },
+  {
+    "model": "users.user_user_permissions",
+    "pk": 2,
+    "fields": {
+      "user": 2,
+      "permission": 26
+    }
+  },
+  {
+    "model": "users.user_user_permissions",
+    "pk": 3,
+    "fields": {
+      "user": 2,
+      "permission": 27
+    }
+  },
+  {
+    "model": "users.user_user_permissions",
+    "pk": 4,
+    "fields": {
+      "user": 2,
+      "permission": 28
+    }
+  }
+]
