@@ -184,7 +184,10 @@
       document.addEventListener("mousemove", dafHandleDragMove);
       document.addEventListener("mouseup", dafHandleDragEnd);
     } else if (event.type === "touchstart") {
-      document.addEventListener("touchmove", dafHandleDragMove);
+      // Prevent scrolling on touch devices
+      document.body.style.overflow = "hidden";
+      document.body.style.touchAction = "none";
+      document.addEventListener("touchmove", dafHandleDragMove, { passive: false });
       document.addEventListener("touchend", dafHandleDragEnd);
       document.addEventListener("touchcancel", dafHandleDragEnd);
     }
@@ -221,6 +224,10 @@
     dafDraggedItem.style.left = "";
     dafDraggedItem.style.right = "";
     dafDraggedItem.style.width = "";
+
+    // Restore scrolling on touch devices
+    document.body.style.overflow = "";
+    document.body.style.touchAction = "";
 
     // Move the card to the placeholder position
     const cardContainer = dafGetCardContainer();
