@@ -120,7 +120,7 @@
     toggleButton.textContent = card.classList.contains(dafHiddenClass) ? "Show" : "Hide";
   }
 
-  function dafSaveFields() {
+  async function dafSaveFields() {
     /*
     Save fields to the user's preferences.
     The expected payload format is the same as the one returned by the backend.
@@ -134,8 +134,44 @@
       return;
     }
 
-    // Refresh the page to apply the changes.
-    window.location.reload();
+    try {
+      const response = await fetch(dafEndpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": dafGetCookie("csrftoken"),
+        },
+        body: JSON.stringify({ data: fields }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Error while saving the list of fields:", await response.text());
+      }
+
+      // Refresh the page to apply the changes.
+      window.location.reload();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  function dafGetCookie(name) {
+    let cookieValue = null;
+
+    if (document.cookie && document.cookie !== "") {
+      const cookies = document.cookie.split(";");
+
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+
+        if (cookie.substring(0, name.length + 1) === (name + "=")) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+
+    return cookieValue;
   }
 
   /* Drag and drop functionality. */

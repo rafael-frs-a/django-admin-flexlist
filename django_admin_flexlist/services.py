@@ -2,7 +2,7 @@ import typing as t
 
 from django.apps import apps
 from django.contrib import admin
-from django.contrib.auth.models import AbstractBaseUser, AnonymousUser
+from django.contrib.auth.models import AbstractBaseUser
 from django.core.exceptions import FieldDoesNotExist
 from django.db import models
 from django.http import HttpRequest
@@ -48,7 +48,7 @@ class FlexListService:
         ]
         """
 
-        if isinstance(request.user, AnonymousUser):
+        if not request.user.is_authenticated:
             return []
 
         flexlist_config = self.get_or_create_config(request.user)
@@ -189,6 +189,47 @@ class FlexListService:
 
         return self.get_model_list_display(request, model)
 
+    def update_model_list_display(
+        self,
+        request: HttpRequest,
+        app_label: str,
+        model_name: str,
+        list_display: list[dict[str, str | bool]],
+    ) -> list[dict[str, str | bool]]:
+        """
+        1. Get the user's flexlist config.
+        2. Get the model class from the app label and model name.
+        3. Build a payload with the part of the config that should be updated.
+        4. Deep update the config with the payload.
+        5. Save the config.
+        6. Return the updated model's list display.s
+        """
+
+        if not request.user.is_authenticated:
+            return []
+
+        flexlist_config = self.get_or_create_config(request.user)
+        model = apps.get_model(app_label, model_name)
+
+        if model is None:
+            return []
+
+        payload = {
+            "apps": {
+                app_label.lower(): {
+                    "models": {
+                        model_name.lower(): {
+                            "list_display": list_display,
+                        }
+                    }
+                }
+            }
+        }
+
+        self.deep_update_dict(flexlist_config.config, payload)
+        flexlist_config.save(update_fields=["config"])
+        return self.get_model_list_display(request, model)
+
     def get_config_list_display(
         self, flexlist_config: DjangoAdminFlexListConfig, model: type[models.Model]
     ) -> list[dict[str, t.Any]]:
@@ -202,16 +243,13 @@ class FlexListService:
         if not isinstance(config, dict):
             config = {}
 
-        app_name = model._meta.app_label.lower()
+        app_label = model._meta.app_label.lower()
         model_name = str(model._meta.model_name).lower()
-
-        if config.get("version") != "v0":
-            config = {"version": "v0"}
 
         if not isinstance(config.get("apps"), dict):
             config["apps"] = {}
 
-        app_config = config["apps"].get(app_name)
+        app_config = config["apps"].get(app_label)
 
         if not isinstance(app_config, dict):
             app_config = {}
@@ -251,3 +289,28 @@ class FlexListService:
             )
 
         return list_display
+
+    def deep_update_dict(
+        self,
+        d1: dict[str, t.Any],
+        d2: dict[str, t.Any],
+        seen: t.Optional[set[int]] = None,
+    ) -> None:
+        """
+        Update d1 with d2 recursively so we don't overwrite an entire item at the root,
+        like the 'apps' key, when updating just one particular nested dictionary value.
+        """
+
+        if seen is None:
+            seen = set()
+
+        if id(d1) in seen:  # Prevent infinite loops with self-referencing dictionaries.
+            return
+
+        seen.add(id(d1))
+
+        for key, value in d2.items():
+            if isinstance(value, dict) and key in d1 and isinstance(d1[key], dict):
+                self.deep_update_dict(d1[key], value, seen)
+            else:
+                d1[key] = value

@@ -1,3 +1,4 @@
+import json
 import typing as t
 
 from django.contrib.auth.mixins import UserPassesTestMixin
@@ -28,5 +29,18 @@ class AppModelListDisplayView(StaffRequiredMixin, View):
     ) -> JsonResponse:
         list_display = self.flexlist_service.get_model_list_display_from_names(
             request, app_label, model_name
+        )
+        return JsonResponse({"data": list_display})
+
+    def post(
+        self, request: HttpRequest, app_label: str, model_name: str
+    ) -> JsonResponse:
+        try:
+            body = json.loads(request.body)
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON"}, status=400)
+
+        list_display = self.flexlist_service.update_model_list_display(
+            request, app_label, model_name, body["data"]
         )
         return JsonResponse({"data": list_display})

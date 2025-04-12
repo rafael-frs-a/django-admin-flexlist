@@ -2,9 +2,6 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "properties": {
-    "version": {
-      "const": "v0"
-    },
     "apps": {
       "type": "object",
       "additionalProperties": {
@@ -54,7 +51,6 @@
     }
   },
   "required": [
-    "version",
     "apps"
   ],
   "additionalProperties": false
