@@ -27,6 +27,19 @@ class AppModelListDisplayView(StaffRequiredMixin, View):
     def get(
         self, request: HttpRequest, app_label: str, model_name: str
     ) -> JsonResponse:
+        """
+        Expected response format:
+        {
+            "data": [
+                {
+                    "name": "field_name",
+                    "visible": true,
+                    "description": "Field Description"
+                },
+                ...
+            ]
+        }
+        """
         list_display = self.flexlist_service.get_model_list_display_from_names(
             request, app_label, model_name
         )
@@ -35,6 +48,20 @@ class AppModelListDisplayView(StaffRequiredMixin, View):
     def post(
         self, request: HttpRequest, app_label: str, model_name: str
     ) -> JsonResponse:
+        """
+        Expected request format:
+        {
+            "data": [
+                {
+                    "name": "field_name",
+                    "visible": true,
+                    "description": "Field Description"
+                },
+                ...
+            ]
+        }
+        Expected response format: same as the expected request format.
+        """
         try:
             body = json.loads(request.body)
         except json.JSONDecodeError:

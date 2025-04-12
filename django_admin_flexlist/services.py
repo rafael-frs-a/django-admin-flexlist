@@ -29,7 +29,10 @@ class FlexListService:
         ]
 
     def get_model_list_display(
-        self, request: HttpRequest, model: type[models.Model]
+        self,
+        request: HttpRequest,
+        model: type[models.Model],
+        flexlist_config: t.Optional[DjangoAdminFlexListConfig] = None,
     ) -> list[dict[str, str | bool]]:
         """
         1. Get the user's flexlist config.
@@ -51,7 +54,7 @@ class FlexListService:
         if not request.user.is_authenticated:
             return []
 
-        flexlist_config = self.get_or_create_config(request.user)
+        flexlist_config = flexlist_config or self.get_or_create_config(request.user)
         original_list_display = self.get_original_list_display(request, model)
         config_list_display = self.get_config_list_display(flexlist_config, model)
         adjusted_config_list_display: list[dict[str, str | bool]] = []
@@ -228,7 +231,8 @@ class FlexListService:
 
         self.deep_update_dict(flexlist_config.config, payload)
         flexlist_config.save(update_fields=["config"])
-        return self.get_model_list_display(request, model)
+        # Let's avoid another DB query to get the updated list display.
+        return self.get_model_list_display(request, model, flexlist_config)
 
     def get_config_list_display(
         self, flexlist_config: DjangoAdminFlexListConfig, model: type[models.Model]
