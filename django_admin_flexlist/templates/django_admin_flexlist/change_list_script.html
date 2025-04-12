@@ -1,0 +1,281 @@
+<script>
+  // Let's prefix all variables with `daf` to avoid conflicts with the admin's variables.
+  const dafEndpoint = `/daf/apps/{{ opts.app_label }}/models/{{ opts.model_name }}/list_display/`;
+
+  const dafButtonClass = "daf-button";
+  const dafToggleButtonClass = "daf-field-card-toggle-button";
+  const dafHiddenClass = "daf-hidden";
+  const dafDragHandleClass = "daf-drag-handle";
+  const dafCardClass = "daf-field-card";
+  const dafCardContentClass = "daf-field-card-content";
+  const dafPlaceholderClass = "daf-field-card-placeholder";
+  const dafDraggingClass = "daf-dragging";
+
+  function dafOpenEditLayoutDialog() {
+    /*
+    Open form dialog by changing its display property to flex.
+    Load fields from the user's preferences.
+    */
+    const dialog = document.getElementById("daf-edit-layout-dialog");
+    dialog.style.display = "flex";
+    dafLoadFields();
+  }
+
+  function dafCloseEditLayoutDialog() {
+    /*
+    Close form dialog by changing its display property to none.
+    */
+    const dialog = document.getElementById("daf-edit-layout-dialog");
+    dialog.style.display = "none";
+  }
+
+  async function dafGetFieldsFromBackend() {
+    /*
+    Fetch list of fields from the user's preferences informing the change list's model and app names.
+    */
+    try {
+      const response = await fetch(dafEndpoint);
+      const responseData = await response.json();
+      return responseData.data;
+    } catch (error) {
+      console.error(error);
+    }
+
+    return [];
+  }
+
+  function dafGetFieldsFromDOM() {
+    /*
+    Fetch modified list of fields from the DOM.
+    Should have the same format as the one returned by the backend.
+    */
+    const cardContainer = dafGetCardContainer();
+    const fields = [];
+    cardContainer.querySelectorAll(`.${dafCardClass}`).forEach(card => {
+      const name = card.getAttribute("data-name");
+      const visible = !card.classList.contains(dafHiddenClass);
+      const description = card.querySelector(`.${dafCardContentClass}`).textContent;
+      fields.push({ name, visible, description });
+    });
+
+    return fields;
+  }
+
+  async function dafLoadFields() {
+    /*
+    Fetch fields from backend and render them properly.
+    */
+    const fields = await dafGetFieldsFromBackend();
+    dafRenderFields(fields);
+  }
+
+  function dafGetCardContainer() {
+    return document.getElementById("daf-edit-layout-fields-container");
+  }
+
+  function dafRenderFields(fields) {
+    /*
+    Render fields in the form dialog.
+    If the list of fields is empty, show a placeholder message.
+    Otherwise, render them into a draggable list, properly following the order of the list.
+    */
+    const noFieldsMessage = document.getElementById("daf-edit-layout-no-fields-message");
+
+    if (fields.length === 0) {
+      noFieldsMessage.style.display = "block";
+      return;
+    }
+
+    noFieldsMessage.style.display = "none";
+    const cardContainer = dafGetCardContainer();
+    cardContainer.innerHTML = "";
+    fields.forEach(field => {
+      const card = document.createElement("div");
+      card.className = `daf-field-card ${field.visible ? "" : dafHiddenClass}`;
+      card.setAttribute("data-name", field.name);
+      card.innerHTML = `
+        <div class="${dafDragHandleClass}">☰</div>
+        <div class="daf-field-card-content">${field.description}</div>
+        <button class="${dafButtonClass} ${dafToggleButtonClass} ${field.visible ? '' : dafHiddenClass}">
+          ${field.visible ? "Hide" : "Show"}
+        </button>
+      `;
+
+      const toggleButton = card.querySelector(`.${dafToggleButtonClass}`);
+      toggleButton.addEventListener("click", () => dafToggleFieldVisibility(card, toggleButton));
+
+      card.addEventListener("mousedown", (e) => dafHandleDragStart(e, card));
+      card.addEventListener("touchstart", (e) => dafHandleDragStart(e, card));
+
+      cardContainer.appendChild(card);
+    });
+  }
+
+  function dafToggleFieldVisibility(card, toggleButton) {
+    /*
+    Alternate the visibility style and the button's text.
+    */
+    card.classList.toggle(dafHiddenClass);
+    toggleButton.classList.toggle(dafHiddenClass);
+    toggleButton.textContent = card.classList.contains(dafHiddenClass) ? "Show" : "Hide";
+  }
+
+  function dafSaveFields() {
+    /*
+    Save fields to the user's preferences.
+    The expected payload format is the same as the one returned by the backend.
+    The only thing that changes would be the order of the fields and their visibility.
+    The endpoint is the same as the one used to fetch the fields, but we'll send a POST request instead.
+    */
+    const fields = dafGetFieldsFromDOM();
+
+    if (fields.length === 0) {
+      dafCloseEditLayoutDialog();
+      return;
+    }
+
+    // Refresh the page to apply the changes.
+    window.location.reload();
+  }
+
+  /* Drag and drop functionality. */
+  let dafDraggedItem = null;
+  let dafPlaceholder = null;
+  let dafDragStartY = 0;
+  let dafDragStartScrollY = 0;
+  let dafDraggingWidth = 0;
+
+  function dafGetClientX(event) {
+    return event.type.includes("touch") ? event.touches[0].clientX : event.clientX;
+  }
+
+  function dafGetClientY(event) {
+    return event.type.includes("touch") ? event.touches[0].clientY : event.clientY;
+  }
+
+  function dafHandleDragStart(event, card) {
+    // Prevent the toggle button from being dragged.
+    if (event.target.classList.contains(dafToggleButtonClass)) return;
+
+    // Get appropriate coordinates based on event type
+    const clientY = dafGetClientY(event);
+
+    dafDraggedItem = card;
+    const rect = dafDraggedItem.getBoundingClientRect();
+    dafDragStartY = clientY - rect.top;
+    dafDragStartScrollY = window.scrollY;
+    const widthOffset = -29;
+    dafDraggingWidth = rect.width + widthOffset;
+
+    // Create a placeholder with same height as the card
+    const cardContainer = dafGetCardContainer();
+    dafPlaceholder = document.createElement("div");
+    dafPlaceholder.className = dafPlaceholderClass;
+    dafPlaceholder.style.height = `${rect.height}px`;
+    cardContainer.insertBefore(dafPlaceholder, dafDraggedItem);
+
+    // Set dragging styles and position
+    dafDraggedItem.classList.add(dafDraggingClass);
+    dafDraggedItem.style.width = `${dafDraggingWidth}px`;
+    dafUpdateDraggingPosition(event);
+
+    // Add event listeners
+    if (event.type === "mousedown") {
+      document.addEventListener("mousemove", dafHandleDragMove);
+      document.addEventListener("mouseup", dafHandleDragEnd);
+    } else if (event.type === "touchstart") {
+      document.addEventListener("touchmove", dafHandleDragMove);
+      document.addEventListener("touchend", dafHandleDragEnd);
+      document.addEventListener("touchcancel", dafHandleDragEnd);
+    }
+
+    // Prevent default behavior like scrolling on mobile
+    event.preventDefault();
+  }
+
+  function dafHandleDragMove(event) {
+    if (!dafDraggedItem) return;
+
+    const clientY = dafGetClientY(event);
+    dafUpdateDraggingPosition(event);
+
+    // Find position to place placeholder
+    const cardContainer = dafGetCardContainer();
+    const afterElement = dafGetDragAfterElement(cardContainer, clientY);
+
+    if (afterElement && afterElement !== dafPlaceholder) {
+      cardContainer.insertBefore(dafPlaceholder, afterElement);
+    } else if (!afterElement && dafPlaceholder.nextSibling !== dafDraggedItem) {
+      cardContainer.appendChild(dafPlaceholder);
+    }
+
+    // Prevent default behavior like scrolling on mobile
+    event.preventDefault();
+  }
+
+  function dafHandleDragEnd(event) {
+    if (!dafDraggedItem) return;
+
+    dafDraggedItem.classList.remove(dafDraggingClass);
+    dafDraggedItem.style.top = "";
+    dafDraggedItem.style.left = "";
+    dafDraggedItem.style.right = "";
+    dafDraggedItem.style.width = "";
+
+    // Move the card to the placeholder position
+    const cardContainer = dafGetCardContainer();
+    cardContainer.insertBefore(dafDraggedItem, dafPlaceholder);
+    cardContainer.removeChild(dafPlaceholder);
+
+    // Update the data array to match the new order
+    const newOrder = Array.from(cardContainer.querySelectorAll(`.${dafCardClass}`)).map(
+      (card) => card.getAttribute("data-name")
+    );
+
+    // Remove global event listeners
+    document.removeEventListener("mousemove", dafHandleDragMove);
+    document.removeEventListener("mouseup", dafHandleDragEnd);
+    document.removeEventListener("touchmove", dafHandleDragMove);
+    document.removeEventListener("touchend", dafHandleDragEnd);
+    document.removeEventListener("touchcancel", dafHandleDragEnd);
+
+    dafDraggedItem = null;
+    dafPlaceholder = null;
+  }
+
+  function dafUpdateDraggingPosition(event) {
+    const cardContainer = dafGetCardContainer();
+    const containerRect = cardContainer.getBoundingClientRect();
+    const clientX = dafGetClientX(event);
+    const clientY = dafGetClientY(event);
+    const y = clientY - dafDragStartY + window.scrollY - dafDragStartScrollY;
+
+    // Center horizontally within container
+    const alignmentOffset = -14;
+    const left = containerRect.left + (containerRect.width - dafDraggingWidth) / 2 + alignmentOffset;
+
+    // Set the position
+    dafDraggedItem.style.top = `${y}px`;
+    dafDraggedItem.style.left = `${left}px`;
+    dafDraggedItem.style.right = "auto"; // Override the right value from CSS
+
+    cardContainer.appendChild(dafDraggedItem); // Move to end to be on top
+  }
+
+  function dafGetDragAfterElement(container, y) {
+    const draggableElements = [...container.querySelectorAll(`
+      .${dafCardClass}:not(.${dafDraggingClass})`
+    )];
+
+    return draggableElements.reduce((closest, child) => {
+      const box = child.getBoundingClientRect();
+      const offset = y - box.top - box.height / 2;
+
+      if (offset < 0 && offset > closest.offset) {
+        return { offset: offset, element: child };
+      } else {
+        return closest;
+      }
+    }, { offset: Number.NEGATIVE_INFINITY }).element;
+  }
+</script>

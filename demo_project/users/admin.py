@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.http import HttpRequest
 from users.models import User
 
-from django_admin_flexlist.admin import FlexListAdmin
+from django_admin_flexlist import FlexListAdmin
 
 
 @admin.register(User)

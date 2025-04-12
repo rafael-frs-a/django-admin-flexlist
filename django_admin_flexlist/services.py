@@ -1,5 +1,6 @@
 import typing as t
 
+from django.apps import apps
 from django.contrib import admin
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser
 from django.core.exceptions import FieldDoesNotExist
@@ -11,7 +12,7 @@ from django_admin_flexlist.models import DjangoAdminFlexListConfig
 
 class FlexListService:
     """
-    This class implements the logic to write and read `DjangoAdminFlexListConfig` objects.
+    This class implements the logic to read and write `DjangoAdminFlexListConfig` objects.
     """
 
     def get_list_display(
@@ -152,23 +153,41 @@ class FlexListService:
 
         if field == "__str__":
             if model._meta.verbose_name is not None:
-                return str(model._meta.verbose_name).strip()
+                return str(model._meta.verbose_name).strip().title()
 
         if hasattr(model_admin, field):
             attr = getattr(model_admin, field)
 
             if callable(attr):
-                return getattr(attr, "short_description", default_description).strip()
+                return (
+                    getattr(attr, "short_description", default_description)
+                    .strip()
+                    .title()
+                )
 
         try:
             model_field = model._meta.get_field(field)
 
             if hasattr(model_field, "verbose_name"):
-                return model_field.verbose_name.strip()
+                return model_field.verbose_name.strip().title()
 
             return default_description
         except FieldDoesNotExist:
             return default_description
+
+    def get_model_list_display_from_names(
+        self, request: HttpRequest, app_label: str, model_name: str
+    ) -> list[dict[str, str | bool]]:
+        """
+        1. Get model from app label and model name.
+        2. Return the model's original list display.
+        """
+        model = apps.get_model(app_label, model_name)
+
+        if model is None:
+            return []
+
+        return self.get_model_list_display(request, model)
 
     def get_config_list_display(
         self, flexlist_config: DjangoAdminFlexListConfig, model: type[models.Model]
