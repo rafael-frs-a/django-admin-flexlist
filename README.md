@@ -6,6 +6,8 @@ A Django package that enhances the admin interface by providing customizable lis
 - Change the order of columns
 - Save their preferred layout for future use
 
+![demo](https://github.com/user-attachments/assets/f0fcac7f-543f-4dc5-9c56-975f494a155f)
+
 ## Setup
 
 ### 1. Installation
