@@ -107,3 +107,23 @@ def upper_case_name(obj):
 class PersonAdmin(admin.ModelAdmin):
     list_display = [upper_case_name]
 ```
+
+# Demo project
+
+To try out the package, you can run the included demo project. Make sure you have [tox](https://tox.wiki/) installed. Then:
+
+1. Clone this repository
+2. Run the demo project with:
+   ```shell
+   $ tox -e py310-django42 -- runserver
+   ```
+   (Replace `py310-django42` with your desired Python and Django versions - see `tox.ini` for supported combinations)
+
+This will:
+- Spin up a Django app with the specified version
+- Create a new SQLite database
+- Populate it with two demo users:
+  - Username: "jon.doe", Password: "jon.doe"
+  - Username: "jane.doe", Password: "jane.doe"
+
+The supported Python and Django versions can be found in the `tox.ini` file.
