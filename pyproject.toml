@@ -37,9 +37,11 @@ dev = [
   "isort~=6.0",
   "mypy~=1.15",
   "django-stubs[compatible-mypy]~=5.1",
+  "pytest~=8.3",
+  "pytest-playwright~=0.7",
 ]
 
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["django_admin_flexlist*"]
-exclude = ["demo_project*"]
+exclude = ["demo_project*", "scripts*", "tests*"]

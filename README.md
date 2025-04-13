@@ -32,10 +32,10 @@ This allows Django to find the package's migrations and templates.
 
 ### 3. Apply migrations
 
-The package adds a DB model to store each user's layout preferences. To use this model, run:
+Django Admin FlexList stores each user's layout preferences in the database. To create the necessary table, run:
 
 ```shell
-python manage.py migrate
+$ python manage.py migrate
 ```
 
 ### 4. Include URLs

@@ -93,6 +93,7 @@
       const card = document.createElement("div");
       card.className = `daf-field-card ${field.visible ? "" : dafHiddenClass}`;
       card.setAttribute("data-name", field.name);
+      card.setAttribute("draggable", "true");
       card.innerHTML = `
         <div class="${dafDragHandleClass}">☰</div>
         <div class="daf-field-card-content">${field.description}</div>
