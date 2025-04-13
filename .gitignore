@@ -6,6 +6,7 @@ venv/
 
 # Python package build directories
 build/
+dist/
 django_admin_flexlist.egg-info/
 
 # Testing environment
