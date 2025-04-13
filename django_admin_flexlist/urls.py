@@ -6,6 +6,6 @@ urlpatterns = [
     path(
         "daf/apps/<str:app_label>/models/<str:model_name>/list_display/",
         views.AppModelListDisplayView.as_view(),
-        name="app_model_list_display",
+        name="daf_app_model_list_display",
     ),
 ]
