@@ -10,7 +10,6 @@ authors = [{ name = "rafael-frs-a" }]
 license = { file = "LICENSE" }
 readme = "README.md"
 keywords = ["django", "admin", "list view", "column toggle", "column reorder", "drag and drop", "list_display", "customize admin", "django admin customization"]
-long_description_content_type = "text/markdown"
 requires-python = ">=3.10"
 classifiers = [
   "Development Status :: 4 - Beta",
