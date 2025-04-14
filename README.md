@@ -1,5 +1,8 @@
 # Django Admin FlexList
 
+[![Published on Django Packages](https://img.shields.io/badge/Published%20on-Django%20Packages-0c3c26)](https://djangopackages.org/packages/p/django-admin-flexlist/)
+
+
 A Django package that enhances the admin interface by providing customizable list views. This package enables users to customize the Django admin list view by adding an "Edit layout" button to the page. When clicked, it opens a dialog form that allows users to:
 
 - Toggle the visibility of list columns
