@@ -10,7 +10,17 @@ from django.http import HttpRequest
 from django_admin_flexlist.models import DjangoAdminFlexListConfig
 
 
-class FlexListService:
+class SingletonMeta(type):
+    _instance: t.Optional[t.Any] = None
+
+    def __call__(cls: t.Type[t.Any], *args: t.Any, **kwargs: t.Any) -> t.Any:
+        if cls._instance is None:
+            cls._instance = super().__call__(*args, **kwargs)
+
+        return cls._instance
+
+
+class FlexListService(metaclass=SingletonMeta):
     """
     This class implements the logic to read and write `DjangoAdminFlexListConfig` objects.
     """
