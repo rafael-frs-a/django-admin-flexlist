@@ -6,7 +6,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: var(--daf-overlay-bg);
   backdrop-filter: blur(5px);
   display: flex;
   justify-content: center;
@@ -19,7 +19,7 @@
 }
 
 .daf-edit-layout-dialog-content {
-  background-color: var(--body-bg);
+  background-color: var(--daf-dialog-body-bg);
   padding: 30px;
   border-radius: 10px;
   width: 80%;
@@ -66,16 +66,16 @@
 }
 
 .daf-button-primary {
-  background-color: var(--message-success-bg);
-  color: var(--text-color);
+  background-color: var(--daf-primary-button-bg);
+  color: var(--daf-primary-button-text);
   padding: 8px 16px;
   font-size: 14px;
   min-width: 80px;
 }
 
 .daf-button-secondary {
-  background-color: var(--border-color);
-  color: var(--text-color);
+  background-color: var(--daf-secondary-button-bg);
+  color: var(--daf-secondary-button-text);
   padding: 8px 16px;
   font-size: 14px;
   min-width: 80px;
@@ -83,8 +83,8 @@
 
 /* List of field cards. */
 .daf-field-card {
-  background-color: var(--darkened-bg);
-  border: 1px solid var(--border-color);
+  background-color: var(--daf-dialog-card-bg);
+  border: 1px solid var(--daf-dialog-card-border);
   border-radius: 8px;
   padding: 14px;
   cursor: grab;
@@ -123,19 +123,19 @@
 }
 
 .daf-field-card-toggle-button {
-  background: #e0e0e0;
+  background: var(--daf-toggle-hide-button-bg);
   min-width: 60px;
-  color: #222;
+  color: var(--daf-toggle-button-text);
   padding: 5px 10px;
 }
 
 .daf-field-card-toggle-button.daf-hidden {
-  background: #fcc;
+  background: var(--daf-toggle-show-button-bg);
 }
 
 .daf-field-card-placeholder {
-  background-color: var(--darkened-bg);
-  border: 2px dashed var(--border-color);
+  background-color: var(--daf-dialog-card-bg);
+  border: 2px dashed var(--daf-dialog-card-border);
   border-radius: 8px;
   /* Match the height of a field card. */
   height: 54px;

@@ -92,7 +92,15 @@ class AppTestCase(TestCase):
         card.get_by_role("button", name=expected_button_text).click()
         field_card.visible = not field_card.visible
         expected_button_text = self._get_expected_button_text(field_card)
-        expect(card.get_by_role("button", name=expected_button_text)).to_be_visible()
+        toggle_button = card.get_by_role("button", name=expected_button_text)
+        expect(toggle_button).to_be_visible()
+
+        # Let's check that the "Show" button has a custom background color
+        if expected_button_text == "Show":
+            background_color = toggle_button.evaluate(
+                "node => getComputedStyle(node).backgroundColor"
+            )
+            assert background_color == "rgb(204, 255, 204)"
 
         return fields_copy
 

@@ -100,6 +100,10 @@ In case your custom template already extends a template other than `"admin/chang
 {% endblock %}
 ```
 
+### 6. Custom styling (optional)
+
+The colors used by the components are defined in `django_admin_flexlist/css/colors.css`. You can override those values with your own, as seen in the demo project's `base/static/base/css/colors.css` file, and adjust your templates to use your custom CSS file, as seen in `templates/admin/base_site.html`.
+
 ## Limitations
 
 The implementation expects fields defined in `list_display` or `get_list_display` to be a list or tuple of strings. This simplifies serializing and deserializing changes saved to the DB model. As a result, the following Django implementation of a field isn't supported:

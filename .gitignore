@@ -17,3 +17,6 @@ django_admin_flexlist.egg-info/
 
 # SQLite database
 db.sqlite3
+
+# Static files for demo_project
+demo_project/staticfiles

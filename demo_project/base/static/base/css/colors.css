@@ -1,0 +1,30 @@
+/* Default colors (no data-theme attribute) */
+:root {
+  --daf-toggle-show-button-bg: #cfc;
+}
+
+/* Browser auto, system light mode */
+html[data-theme="auto"] {
+  --daf-toggle-show-button-bg: #cfc;
+}
+
+/* Browser auto, system dark mode */
+@media (prefers-color-scheme: dark) {
+  html[data-theme="auto"] {
+    --daf-toggle-hide-button-bg: #444;
+    --daf-toggle-show-button-bg: #4a4;
+    --daf-toggle-button-text: #fff;
+  }
+}
+
+/* Browser light mode */
+html[data-theme="light"] {
+  --daf-toggle-show-button-bg: #cfc;
+}
+
+/* Browser dark mode */
+html[data-theme="dark"] {
+  --daf-toggle-hide-button-bg: #444;
+  --daf-toggle-show-button-bg: #4a4;
+  --daf-toggle-button-text: #fff;
+}

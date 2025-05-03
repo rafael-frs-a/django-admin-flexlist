@@ -79,6 +79,8 @@
     If the list of fields is empty, show a placeholder message.
     Otherwise, render them into a draggable list, properly following the order of the list.
     */
+    const cardContainer = dafGetCardContainer();
+    cardContainer.innerHTML = "";
     const noFieldsMessage = document.getElementById("daf-edit-layout-no-fields-message");
 
     if (fields.length === 0) {
@@ -87,8 +89,6 @@
     }
 
     noFieldsMessage.style.display = "none";
-    const cardContainer = dafGetCardContainer();
-    cardContainer.innerHTML = "";
     fields.forEach(field => {
       const card = document.createElement("div");
       card.className = `daf-field-card ${field.visible ? "" : dafHiddenClass}`;

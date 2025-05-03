@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     # 3rd party
     "django_admin_flexlist",
     # apps
+    "base",
     "users",
 ]
 
