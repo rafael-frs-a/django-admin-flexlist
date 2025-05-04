@@ -71,7 +71,11 @@ class FlexListService:
 
         for field in config_list_display:
             if field["name"] in original_list_display:
-                adjusted_config_list_display.append(field)
+                # Let's prioritize the description from the original field
+                original_field_description = original_list_display[field["name"]]
+                adjusted_config_list_display.append(
+                    {**field, "description": original_field_description}
+                )
                 seen_fields.add(field["name"])
 
         for field_name, description in original_list_display.items():
@@ -214,7 +218,7 @@ class FlexListService:
         3. Build a payload with the part of the config that should be updated.
         4. Deep update the config with the payload.
         5. Save the config.
-        6. Return the updated model's list display.s
+        6. Return the updated model's list display.
         """
 
         if not request.user.is_authenticated:
