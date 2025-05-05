@@ -13,14 +13,14 @@ class FlexListAdmin(admin.ModelAdmin):  # type: ignore[type-arg]
 
     @classmethod
     def __init_subclass__(cls) -> None:
-        from django_admin_flexlist.services import FlexListService
+        from django_admin_flexlist.services import FlexListAdminService
 
         super().__init_subclass__()
-        flexlist_service = FlexListService()
+        service = FlexListAdminService()
         original_get_list_display = cls.get_list_display
 
         def wrapped(self: admin.ModelAdmin, request: HttpRequest) -> list[str]:  # type: ignore[type-arg]
-            return flexlist_service.get_list_display(request, self.model)
+            return service.get_custom_list_display(request, self.model)
 
         cls._daf_original_get_list_display = original_get_list_display  # type: ignore[attr-defined]
         cls.get_list_display = wrapped  # type: ignore[assignment]

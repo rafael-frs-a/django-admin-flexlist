@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.http import HttpRequest, JsonResponse
 from django.views import View
 
-from django_admin_flexlist.services import FlexListService
+from django_admin_flexlist.services import AppModelListDisplayViewService
 
 
 class StaffRequiredMixin(UserPassesTestMixin):
@@ -22,7 +22,7 @@ class StaffRequiredMixin(UserPassesTestMixin):
 class AppModelListDisplayView(StaffRequiredMixin, View):
     def __init__(self, *args: t.Any, **kwargs: t.Any) -> None:
         super().__init__(*args, **kwargs)
-        self.flexlist_service = FlexListService()
+        self.service = AppModelListDisplayViewService()
 
     def get(
         self, request: HttpRequest, app_label: str, model_name: str
@@ -40,9 +40,7 @@ class AppModelListDisplayView(StaffRequiredMixin, View):
             ]
         }
         """
-        list_display = self.flexlist_service.get_model_list_display_from_names(
-            request, app_label, model_name
-        )
+        list_display = self.service.get_list_fields(request, app_label, model_name)
         return JsonResponse({"data": list_display})
 
     def post(
@@ -67,7 +65,7 @@ class AppModelListDisplayView(StaffRequiredMixin, View):
         except json.JSONDecodeError:
             return JsonResponse({"error": "Invalid JSON"}, status=400)
 
-        list_display = self.flexlist_service.update_model_list_display(
+        list_display = self.service.update_list_fields(
             request, app_label, model_name, body["data"]
         )
         return JsonResponse({"data": list_display})
