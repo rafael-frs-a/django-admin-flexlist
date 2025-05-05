@@ -106,6 +106,15 @@ def get_list_from_value(value: t.Any) -> list[t.Any]:
 def make_list_fields_from_data(data: t.Any) -> list[FlexListField]:
     """
     Creates a list of FlexListField objects from a dictionary.
+
+    Args:
+        data: A dictionary or list containing field configurations
+
+    Returns:
+        A list of FlexListField objects created from the input data
+
+    Note:
+        Invalid field configurations are silently skipped
     """
 
     data_list = get_list_from_value(data)
@@ -122,11 +131,45 @@ def make_list_fields_from_data(data: t.Any) -> list[FlexListField]:
     return result
 
 
+def make_payload_from_list_fields(
+    list_fields: list[FlexListField],
+) -> list[dict[str, t.Any]]:
+    """
+    Creates a payload from a list of FlexListField objects.
+
+    Args:
+        list_fields: A list of FlexListField objects to convert to dictionaries
+
+    Returns:
+        A list of dictionaries containing the field configurations
+
+    Example:
+        >>> fields = [FlexListField(name="user", description="User", visible=True)]
+        >>> make_payload_from_list_fields(fields)
+        [{"name": "user", "description": "User", "visible": True}]
+    """
+
+    return [asdict(field) for field in list_fields]
+
+
 def make_update_payload_from_list_fields(
     list_fields: list[FlexListField], path: list[str]
 ) -> dict[str, t.Any]:
     """
     Creates an update payload from a list of FlexListField objects.
+
+    Args:
+        list_fields: A list of FlexListField objects to include in the payload
+        path: A list of strings representing the path where the fields should be stored
+
+    Returns:
+        A nested dictionary structure with the fields stored at the specified path
+
+    Example:
+        >>> path = ["apps", "auth", "model_list"]
+        >>> fields = [FlexListField(name="user", description="User", visible=True)]
+        >>> make_update_payload_from_list_fields(fields, path)
+        {"apps": {"auth": {"model_list": [{"name": "user", "description": "User", "visible": True}]}}}
     """
 
     payload: dict[str, t.Any] = {}
@@ -136,15 +179,5 @@ def make_update_payload_from_list_fields(
         current[key] = {}
         current = current[key]
 
-    current[path[-1]] = [asdict(field) for field in list_fields]
+    current[path[-1]] = make_payload_from_list_fields(list_fields)
     return payload
-
-
-def make_payload_from_list_fields(
-    list_fields: list[FlexListField],
-) -> list[dict[str, t.Any]]:
-    """
-    Creates a payload from a list of FlexListField objects.
-    """
-
-    return [asdict(field) for field in list_fields]

@@ -21,7 +21,14 @@ class FlexListAdminSiteService(utils.Singleton):
         self, request: HttpRequest, app_label: t.Optional[str] = None
     ) -> list[dict[str, t.Any]]:
         """
-        TODO: Add docstring
+        Retrieves and returns a customized app list based on the flexlist configuration.
+
+        Args:
+            request: The HTTP request object
+            app_label: Optional app label to filter the app list
+
+        Returns:
+            A list of dictionaries containing app information
         """
 
         if not request.user.is_authenticated:
@@ -101,16 +108,38 @@ class AppModelListService(utils.Singleton):
     """
 
     def make_app_list_path(self) -> list[str]:
+        """
+        Creates a path to the flexlist config's app list fields.
+
+        Returns:
+            A list of strings representing the path to the app list configuration
+        """
         return ["app_list"]
 
     def make_model_list_path(self, app_label: str) -> list[str]:
+        """
+        Creates a path to the flexlist config's model list fields.
+
+        Args:
+            app_label: The Django app label
+
+        Returns:
+            A list of strings representing the path to the model list configuration
+        """
         return ["apps", app_label, "model_list"]
 
     def get_original_app_list(
         self, request: HttpRequest, app_label: t.Optional[str] = None
     ) -> list[dict[str, t.Any]]:
         """
-        TODO: Add doctring
+        Retrieves the original app list from Django's admin site.
+
+        Args:
+            request: The HTTP request object
+            app_label: Optional app label to filter the app list
+
+        Returns:
+            A list of dictionaries containing app information
         """
 
         if not request.user.is_authenticated:
@@ -141,7 +170,14 @@ class AppListViewService(utils.Singleton):
         flexlist_config: t.Optional[DjangoAdminFlexListConfig] = None,
     ) -> list[dict[str, str | bool]]:
         """
-        TODO: Add docstring
+        Retrieves and returns the list of apps with their visibility settings.
+
+        Args:
+            request: The HTTP request object
+            flexlist_config: Optional flexlist configuration to use
+
+        Returns:
+            A list of dictionaries containing app information and visibility settings
         """
 
         if not request.user.is_authenticated:
@@ -189,7 +225,14 @@ class AppListViewService(utils.Singleton):
         self, request: HttpRequest, data: t.Any
     ) -> list[dict[str, str | bool]]:
         """
-        TODO: Add docstring
+        Updates the app list configuration.
+
+        Args:
+            request: The HTTP request object
+            data: The new app list configuration data
+
+        Returns:
+            A list of dictionaries containing the updated app information
         """
 
         if not request.user.is_authenticated:
@@ -219,7 +262,15 @@ class AppModelListViewService(utils.Singleton):
         flexlist_config: t.Optional[DjangoAdminFlexListConfig] = None,
     ) -> list[dict[str, str | bool]]:
         """
-        TODO: Add docstring
+        Retrieves and returns the list of models for a specific app with their visibility settings.
+
+        Args:
+            request: The HTTP request object
+            app_label: The Django app label
+            flexlist_config: Optional flexlist configuration to use
+
+        Returns:
+            A list of dictionaries containing model information and visibility settings
         """
 
         if not request.user.is_authenticated:
@@ -276,7 +327,15 @@ class AppModelListViewService(utils.Singleton):
         self, request: HttpRequest, app_label: str, data: t.Any
     ) -> list[dict[str, str | bool]]:
         """
-        TODO: Add docstring
+        Updates the model list configuration for a specific app.
+
+        Args:
+            request: The HTTP request object
+            app_label: The Django app label
+            data: The new model list configuration data
+
+        Returns:
+            A list of dictionaries containing the updated model information
         """
 
         if not request.user.is_authenticated:

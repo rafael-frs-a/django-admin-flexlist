@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     # apps
     "base",
     "users",
+    "blog",
+    "contact_messages",
 ]
 
 MIDDLEWARE = [
