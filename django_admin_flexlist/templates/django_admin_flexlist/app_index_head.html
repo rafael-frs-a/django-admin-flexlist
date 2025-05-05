@@ -3,4 +3,5 @@
 <link rel="stylesheet" href="{% static 'django_admin_flexlist/css/colors.css' %}">
 <link rel="stylesheet" href="{% static 'django_admin_flexlist/css/edit_layout_form.css' %}">
 <!-- Save this file without formatting, or it will break the line below and Django will render it as plain text -->
-{% include "django_admin_flexlist/components/edit_layout_form_script.html" with dafEditLayoutEndpoint="/daf/apps/"|add:opts.app_label|add:"/models/"|add:opts.model_name|add:"/list_display/" %}
+{% include "django_admin_flexlist/components/edit_layout_form_script.html" with dafEditLayoutEndpoint="/daf/apps/"|add:app_label|add:"/model_list/" %}
+{% include "django_admin_flexlist/app_index_script.html" %}

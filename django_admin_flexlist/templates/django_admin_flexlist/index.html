@@ -1,0 +1,12 @@
+{% extends "admin/index.html" %}
+
+{% block extrastyle %}
+{{ block.super }}
+{% include "django_admin_flexlist/index_head.html" %}
+{% endblock %}
+
+{% block content %}
+{{ block.super }}
+{% include "django_admin_flexlist/index_actions.html" %}
+{% include "django_admin_flexlist/index_content.html" %}
+{% endblock %}

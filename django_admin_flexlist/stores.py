@@ -8,12 +8,18 @@ from django_admin_flexlist.models import DjangoAdminFlexListConfig
 
 class FlexListConfigStore(utils.Singleton):
     """
-    This class is responsible for handling flexlist config objects.
+    Manages the storage and retrieval of flexlist configuration objects.
     """
 
     def get_or_create_config(self, user: AbstractBaseUser) -> DjangoAdminFlexListConfig:
         """
-        Get the user's flexlist config or create a new one if it doesn't exist.
+        Retrieves or creates a flexlist configuration for the given user.
+
+        Args:
+            user: The user to get or create the configuration for
+
+        Returns:
+            The user's flexlist configuration object
         """
 
         flexlist_config, _ = DjangoAdminFlexListConfig.objects.get_or_create(user=user)
@@ -23,8 +29,14 @@ class FlexListConfigStore(utils.Singleton):
         self, flexlist_config: DjangoAdminFlexListConfig, path: list[str]
     ) -> list[utils.FlexListField]:
         """
-        This method returns a list of flexlist fields expected to be found within the config's JSON,
-        under the given path.
+        Retrieves a list of flexlist fields from the configuration at the specified path.
+
+        Args:
+            flexlist_config: The flexlist configuration object
+            path: List of keys representing the path to the fields in the config
+
+        Returns:
+            A list of FlexListField objects found at the specified path
         """
 
         if not path:
@@ -51,7 +63,14 @@ class FlexListConfigStore(utils.Singleton):
         self, flexlist_config: DjangoAdminFlexListConfig, payload: dict[str, t.Any]
     ) -> DjangoAdminFlexListConfig:
         """
-        Update the flexlist config with the given payload.
+        Updates the flexlist configuration with new data.
+
+        Args:
+            flexlist_config: The flexlist configuration object to update
+            payload: Dictionary containing the new configuration data
+
+        Returns:
+            The updated flexlist configuration object
         """
 
         utils.deep_update_dict(flexlist_config.config, payload)

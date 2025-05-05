@@ -2,11 +2,57 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "properties": {
+    "app_list": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "visible": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "name",
+          "description",
+          "visible"
+        ],
+        "additionalProperties": false
+      }
+    },
     "apps": {
       "type": "object",
       "additionalProperties": {
         "type": "object",
         "properties": {
+          "model_list": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "visible": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "name",
+                "description",
+                "visible"
+              ],
+              "additionalProperties": false
+            }
+          },
           "models": {
             "type": "object",
             "additionalProperties": {
@@ -44,6 +90,7 @@
           }
         },
         "required": [
+          "model_list",
           "models"
         ],
         "additionalProperties": false
@@ -51,6 +98,7 @@
     }
   },
   "required": [
+    "app_list",
     "apps"
   ],
   "additionalProperties": false

@@ -1,5 +1,4 @@
 import typing as t
-from dataclasses import asdict
 
 from django.apps import apps
 from django.contrib import admin
@@ -14,7 +13,7 @@ from django_admin_flexlist.stores import FlexListConfigStore
 
 class FlexListAdminService(utils.Singleton):
     """
-    This class acts as an intermediary between `FlexListAdmin` and `AppModelListDisplayService`
+    Acts as an intermediary between `FlexListAdmin` and `AppModelListDisplayService`.
     """
 
     def __init__(self) -> None:
@@ -24,8 +23,14 @@ class FlexListAdminService(utils.Singleton):
         self, request: HttpRequest, model: type[models.Model]
     ) -> list[str]:
         """
-        1. Get list of flexlist fields from the config.
-        2. Return a list of strings with the field names.
+        Retrieves and returns a list of visible flexlist field names from the configuration.
+
+        Args:
+            request: The HTTP request object
+            model: The Django model class
+
+        Returns:
+            A list of strings containing the names of visible fields
         """
 
         fields = self.service.get_list_fields(request, model)
@@ -34,7 +39,7 @@ class FlexListAdminService(utils.Singleton):
 
 class AppModelListDisplayViewService(utils.Singleton):
     """
-    This class acts as an intermediary between `AppModelListDisplayView` and `AppModelListDisplayService`.
+    Acts as an intermediary between `AppModelListDisplayView` and `AppModelListDisplayService`.
     """
 
     def __init__(self) -> None:
@@ -45,9 +50,15 @@ class AppModelListDisplayViewService(utils.Singleton):
         self, request: HttpRequest, app_label: str, model_name: str
     ) -> list[dict[str, str | bool]]:
         """
-        1. Get the model class from the app label and model name.
-        2. Get flexlist fields from the user's config.
-        3. Convert list of `FlexListField` to list of dicts.
+        Retrieves and returns the list of fields for a specific model.
+
+        Args:
+            request: The HTTP request object
+            app_label: The Django app label
+            model_name: The name of the model
+
+        Returns:
+            A list of dictionaries containing field information
         """
 
         model = self.get_model(app_label, model_name)
@@ -56,25 +67,38 @@ class AppModelListDisplayViewService(utils.Singleton):
             return []
 
         fields = self.service.get_list_fields(request, model)
-        return [asdict(field) for field in fields]
+        return utils.make_payload_from_list_fields(fields)
 
     def get_model(
         self, app_label: str, model_name: str
     ) -> t.Optional[type[models.Model]]:
         """
-        Get a model from the given app label and model name.
+        Retrieves a model class using the provided app label and model name.
+
+        Args:
+            app_label: The Django app label
+            model_name: The name of the model
+
+        Returns:
+            The model class if found, None otherwise
         """
 
         return apps.get_model(app_label, model_name)
 
     def update_list_fields(
-        self, request: HttpRequest, app_label: str, model_name: str, payload: t.Any
+        self, request: HttpRequest, app_label: str, model_name: str, data: t.Any
     ) -> list[dict[str, str | bool]]:
         """
-        1. Get the model class from the app label and model name.
-        2. Make list of `FlexListField` from the payload.
-        3. Update the user's flexlist config with the new list of fields.
-        4. Make a list of dicts from the updated list of fields.
+        Updates the list fields configuration for a specific model.
+
+        Args:
+            request: The HTTP request object
+            app_label: The Django app label
+            model_name: The name of the model
+            data: The new field configuration data
+
+        Returns:
+            A list of dictionaries containing the updated field information
         """
 
         model = self.get_model(app_label, model_name)
@@ -82,27 +106,17 @@ class AppModelListDisplayViewService(utils.Singleton):
         if model is None:
             return []
 
-        list_fields: list[utils.FlexListField] = []
-        payload_list = utils.get_list_from_value(payload)
-
-        for field in payload_list:
-            field_dict = utils.get_dict_from_value(field)
-
-            try:
-                list_fields.append(utils.FlexListField(**field_dict))
-            except TypeError:
-                continue
-
+        list_fields = utils.make_list_fields_from_data(data)
         updated_list_fields = self.service.update_list_fields(
             request, model, list_fields
         )
 
-        return [asdict(field) for field in updated_list_fields]
+        return utils.make_payload_from_list_fields(updated_list_fields)
 
 
 class AppModelListDisplayService(utils.Singleton):
     """
-    This class implements the main logic over custom list display fields.
+    Implements the core logic for managing custom list display fields.
     """
 
     def __init__(self) -> None:
@@ -112,8 +126,14 @@ class AppModelListDisplayService(utils.Singleton):
         self, request: HttpRequest, model: type[models.Model]
     ) -> list[utils.FlexListField]:
         """
-        1. Get the flexlist config.
-        2. Return the list of fields from the flexlist config.
+        Retrieves the list of fields from the flexlist configuration.
+
+        Args:
+            request: The HTTP request object
+            model: The Django model class
+
+        Returns:
+            A list of FlexListField objects
         """
 
         if not request.user.is_authenticated:
@@ -129,16 +149,21 @@ class AppModelListDisplayService(utils.Singleton):
         flexlist_config: DjangoAdminFlexListConfig,
     ) -> list[utils.FlexListField]:
         """
-        1. Make a path to the flexlist config's list fields.
-        2. Get the flexlist config's list fields.
-        3. Get original list display fields as the source of truth.
-        4. Add to result the fields from the flexlist config that are in the original list display.
-        5. Add to result the fields from the original list display that are not in the flexlist config.
+        Processes and combines fields from both the flexlist config and original list display.
+
+        Args:
+            request: The HTTP request object
+            model: The Django model class
+            flexlist_config: The current flexlist configuration
+
+        Returns:
+            A list of FlexListField objects combining both config and original fields
         """
 
         path = self._make_list_display_path(model)
         fields = self.store.get_config_list_fields(flexlist_config, path)
 
+        # Use original list display as source of truth
         original_list_display_fields = self.get_original_list_display_fields(
             request, model
         )
@@ -146,13 +171,17 @@ class AppModelListDisplayService(utils.Singleton):
         result: list[utils.FlexListField] = []
         seen_fields: set[str] = set()
 
+        # Add to the result the fields from the flexlist config that are present in the original list display
         for field in fields:
-            if field.name in original_list_display_fields:
-                # Let's prioritize the description from the original field
-                field.description = original_list_display_fields[field.name]
-                result.append(field)
-                seen_fields.add(field.name)
+            if field.name not in original_list_display_fields:
+                continue
 
+            # Let's prioritize the description from the original field
+            field.description = original_list_display_fields[field.name]
+            result.append(field)
+            seen_fields.add(field.name)
+
+        # Add to the result the fields from the original list display that are not present in the flexlist config
         for field_name, description in original_list_display_fields.items():
             if field_name in seen_fields:
                 continue
@@ -167,7 +196,13 @@ class AppModelListDisplayService(utils.Singleton):
 
     def _make_list_display_path(self, model: type[models.Model]) -> list[str]:
         """
-        Make a path to the flexlist config's list fields.
+        Creates a path to the flexlist config's list fields.
+
+        Args:
+            model: The Django model class
+
+        Returns:
+            A list of strings representing the path to the list fields configuration
         """
 
         app_label = model._meta.app_label.lower()
@@ -178,12 +213,14 @@ class AppModelListDisplayService(utils.Singleton):
         self, request: HttpRequest, model: type[models.Model]
     ) -> dict[str, str]:
         """
-        1. Locate the model's admin class.
-        2. Use its `_daf_original_get_list_display` method to get the original `list_display`, avoiding an infinite loop.
-        3. Make sure `list_display` is a list of strings, as it must be serializable to JSON.
-        4. Infer the field description for each field in the `list_display`.
-        5. Return a dictionary, where each key is the field name and the value is the field description.
-        Python 3.7+ should preserve the order of the keys.
+        Retrieves the original list display fields and their descriptions.
+
+        Args:
+            request: The HTTP request object
+            model: The Django model class
+
+        Returns:
+            A dictionary mapping field names to their descriptions
         """
 
         model_admin = self.get_model_admin(model)
@@ -191,6 +228,7 @@ class AppModelListDisplayService(utils.Singleton):
         if not hasattr(model_admin, "_daf_original_get_list_display"):
             return {}
 
+        # Make sure to call `_daf_original_get_list_display` over `get_list_display` to avoid infinite loops
         original_list_display = model_admin._daf_original_get_list_display(request)
         list_display = self.cast_list_display_to_list_of_strings(original_list_display)
         fields_descriptions = {
@@ -201,7 +239,16 @@ class AppModelListDisplayService(utils.Singleton):
 
     def get_model_admin(self, model: type[models.Model]) -> admin.ModelAdmin:  # type: ignore[type-arg]
         """
-        Locate the admin class for a given model.
+        Retrieves the admin class for a given model.
+
+        Args:
+            model: The Django model class
+
+        Returns:
+            The ModelAdmin class for the given model
+
+        Raises:
+            ValueError: If no admin class is found for the model
         """
 
         admin_site = admin.site
@@ -216,15 +263,26 @@ class AppModelListDisplayService(utils.Singleton):
         self, list_display: list[t.Any] | tuple[t.Any, ...]
     ) -> list[str]:
         """
-        Cast a list or tuple of fields to a list of strings.
+        Converts a list or tuple of fields to a list of string field names.
+
+        Args:
+            list_display: A list or tuple of field references
+
+        Returns:
+            A list of string field names
         """
 
         return [self.get_field_name(field) for field in list_display]
 
     def get_field_name(self, field: t.Any) -> str:
         """
-        Get the name of a field.
-        If it's a callable, return the name of the function. Otherwise, return the name of the field.
+        Extracts the name of a field from various field types.
+
+        Args:
+            field: A field reference (callable or string)
+
+        Returns:
+            The string name of the field
         """
 
         if hasattr(field, "__name__"):
@@ -242,11 +300,19 @@ class AppModelListDisplayService(utils.Singleton):
         model_admin: admin.ModelAdmin,  # type: ignore[type-arg]
     ) -> str:
         """
-        Infer the description of a field.
-        1. Check for Django string representation.
-        2. Check if it's a custom admin field with short description informed.
-        3. Check for the field's verbose name.
-        4. Fallback to the field name in title case.
+        Determines the description for a field using multiple fallback methods:
+        1. Django string representation
+        2. Custom admin field with short description
+        3. Field's verbose name
+        4. Field name in title case
+
+        Args:
+            field: The field name
+            model: The Django model class
+            model_admin: The model's admin class
+
+        Returns:
+            The field description as a string
         """
 
         default_description = field.replace("_", " ").strip().title()
@@ -282,37 +348,22 @@ class AppModelListDisplayService(utils.Singleton):
         list_fields: list[utils.FlexListField],
     ) -> list[utils.FlexListField]:
         """
-        1. Get the user's flexlist config.
-        2. Build a payload with the part of the config that should be updated.
-        3. Update the config with the payload.
-        4. Return the updated list fields.
+        Updates the user's flexlist configuration with new field settings.
+
+        Args:
+            request: The HTTP request object
+            model: The Django model class
+            list_fields: The new list of FlexListField objects
+
+        Returns:
+            The updated list of FlexListField objects
         """
 
         if not request.user.is_authenticated:
             return []
 
         flexlist_config = self.store.get_or_create_config(request.user)
-        payload = self._make_update_payload(model, list_fields)
+        path = self._make_list_display_path(model)
+        payload = utils.make_update_payload_from_list_fields(list_fields, path)
         flexlist_config = self.store.update_config(flexlist_config, payload)
         return self._get_list_fields(request, model, flexlist_config)
-
-    def _make_update_payload(
-        self, model: type[models.Model], list_fields: list[utils.FlexListField]
-    ) -> dict[str, t.Any]:
-        """
-        1. Make a path to the flexlist config's list fields.
-        2. Add empty dicts for each key in the path, except for the last one.
-        3. Make the last key a list of dictionaries, each representing a `FlexListField`.
-        """
-
-        path = self._make_list_display_path(model)
-
-        payload: dict[str, t.Any] = {}
-        current: dict[str, t.Any] = payload
-
-        for key in path[:-1]:
-            current[key] = {}
-            current = current[key]
-
-        current[path[-1]] = [asdict(field) for field in list_fields]
-        return payload

@@ -1,6 +1,6 @@
 <script>
   // Let's prefix all variables with `daf` to avoid conflicts with the admin's variables.
-  const dafEndpoint = `/daf/apps/{{ opts.app_label }}/models/{{ opts.model_name }}/list_display/`;
+  const dafEndpoint = "{{ dafEditLayoutEndpoint }}";
 
   const dafButtonClass = "daf-button";
   const dafToggleButtonClass = "daf-field-card-toggle-button";
@@ -63,8 +63,11 @@
 
   async function dafLoadFields() {
     /*
-    Fetch fields from backend and render them properly.
+    Clear the card container and fetch fields from backend.
     */
+    const cardContainer = dafGetCardContainer();
+    cardContainer.innerHTML = "";
+
     const fields = await dafGetFieldsFromBackend();
     dafRenderFields(fields);
   }
@@ -79,8 +82,6 @@
     If the list of fields is empty, show a placeholder message.
     Otherwise, render them into a draggable list, properly following the order of the list.
     */
-    const cardContainer = dafGetCardContainer();
-    cardContainer.innerHTML = "";
     const noFieldsMessage = document.getElementById("daf-edit-layout-no-fields-message");
 
     if (fields.length === 0) {
@@ -108,6 +109,7 @@
       card.addEventListener("mousedown", (e) => dafHandleDragStart(e, card));
       card.addEventListener("touchstart", (e) => dafHandleDragStart(e, card));
 
+      const cardContainer = dafGetCardContainer();
       cardContainer.appendChild(card);
     });
   }

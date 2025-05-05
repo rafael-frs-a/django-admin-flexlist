@@ -1,0 +1,21 @@
+<script>
+  // Let's prefix all variables with `daf` to avoid conflicts with the admin's variables.
+  const dafIndexActionContainerId = "daf-index-action-container";
+  const dafContentContainerId = "content-main";
+
+  // Function to move the action container to the content area and make it visible
+  function dafMoveActionContainer() {
+    const actionContainer = document.getElementById(dafIndexActionContainerId);
+    const contentContainer = document.getElementById(dafContentContainerId);
+
+    if (actionContainer && contentContainer) {
+      // Move the action container to be the first child of the content container
+      contentContainer.insertBefore(actionContainer, contentContainer.firstChild);
+      // Make it visible
+      actionContainer.style.display = "block";
+    }
+  }
+
+  // Execute when the DOM is fully loaded
+  document.addEventListener("DOMContentLoaded", dafMoveActionContainer);
+</script>

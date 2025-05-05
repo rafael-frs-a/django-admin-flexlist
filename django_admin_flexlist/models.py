@@ -9,9 +9,15 @@ if t.TYPE_CHECKING:
 
 class DjangoAdminFlexListConfig(models.Model):
     """
-    This model stores all of the package's configuration for a user in the format of a JSON field.
-    This way, we reduce the chances of changing the model and having new migrations.
-    The expected format for the JSON field is defined in the schema files under the `schemas` directory.
+    Stores user-specific configuration for the flexlist functionality.
+
+    Uses a JSON field to store configuration data, which allows for flexible schema
+    changes without requiring database migrations. The expected JSON structure is
+    defined in the schema files under the `schemas` directory.
+
+    Attributes:
+        user: One-to-one relationship with the user model
+        config: JSON field storing the user's flexlist configuration
     """
 
     user: "models.OneToOneField[AbstractUser]" = models.OneToOneField(
