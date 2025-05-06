@@ -1,0 +1,13 @@
+html {
+  --daf-overlay-bg: rgba(0, 0, 0, 0.5);
+  --daf-dialog-body-bg: var(--body-bg);
+  --daf-primary-button-bg: var(--message-success-bg);
+  --daf-primary-button-text: var(--text-color);
+  --daf-secondary-button-bg: var(--border-color);
+  --daf-secondary-button-text: var(--text-color);
+  --daf-dialog-card-bg: var(--darkened-bg);
+  --daf-dialog-card-border: var(--border-color);
+  --daf-toggle-button-text: #222;
+  --daf-toggle-hide-button-bg: #e0e0e0;
+  --daf-toggle-show-button-bg: #fcc;
+}

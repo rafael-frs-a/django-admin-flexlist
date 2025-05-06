@@ -68,5 +68,133 @@
       "user": 2,
       "permission": 28
     }
+  },
+  {
+    "model": "users.user_user_permissions",
+    "pk": 5,
+    "fields": {
+      "user": 2,
+      "permission": 29
+    }
+  },
+  {
+    "model": "users.user_user_permissions",
+    "pk": 6,
+    "fields": {
+      "user": 2,
+      "permission": 30
+    }
+  },
+  {
+    "model": "users.user_user_permissions",
+    "pk": 7,
+    "fields": {
+      "user": 2,
+      "permission": 31
+    }
+  },
+  {
+    "model": "users.user_user_permissions",
+    "pk": 8,
+    "fields": {
+      "user": 2,
+      "permission": 32
+    }
+  },
+  {
+    "model": "users.user_user_permissions",
+    "pk": 9,
+    "fields": {
+      "user": 2,
+      "permission": 33
+    }
+  },
+  {
+    "model": "users.user_user_permissions",
+    "pk": 10,
+    "fields": {
+      "user": 2,
+      "permission": 34
+    }
+  },
+  {
+    "model": "users.user_user_permissions",
+    "pk": 11,
+    "fields": {
+      "user": 2,
+      "permission": 35
+    }
+  },
+  {
+    "model": "users.user_user_permissions",
+    "pk": 12,
+    "fields": {
+      "user": 2,
+      "permission": 36
+    }
+  },
+  {
+    "model": "users.user_user_permissions",
+    "pk": 13,
+    "fields": {
+      "user": 2,
+      "permission": 37
+    }
+  },
+  {
+    "model": "users.user_user_permissions",
+    "pk": 14,
+    "fields": {
+      "user": 2,
+      "permission": 38
+    }
+  },
+  {
+    "model": "users.user_user_permissions",
+    "pk": 15,
+    "fields": {
+      "user": 2,
+      "permission": 39
+    }
+  },
+  {
+    "model": "users.user_user_permissions",
+    "pk": 16,
+    "fields": {
+      "user": 2,
+      "permission": 40
+    }
+  },
+  {
+    "model": "users.user_user_permissions",
+    "pk": 17,
+    "fields": {
+      "user": 2,
+      "permission": 41
+    }
+  },
+  {
+    "model": "users.user_user_permissions",
+    "pk": 18,
+    "fields": {
+      "user": 2,
+      "permission": 42
+    }
+  },
+  {
+    "model": "users.user_user_permissions",
+    "pk": 19,
+    "fields": {
+      "user": 2,
+      "permission": 43
+    }
+  },
+  {
+    "model": "users.user_user_permissions",
+    "pk": 20,
+    "fields": {
+      "user": 2,
+      "permission": 44
+    }
   }
 ]
