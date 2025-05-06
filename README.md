@@ -9,7 +9,7 @@ A Django package that enables users to customize the admin list view, app index,
 - Change their order
 - Save their preferred layout for future use
 
-![demo](https://github.com/user-attachments/assets/f0fcac7f-543f-4dc5-9c56-975f494a155f)
+![demo](https://github.com/user-attachments/assets/a98a7fd7-a971-43b0-8811-22f62a4cfe14)
 
 ## Setup
 
