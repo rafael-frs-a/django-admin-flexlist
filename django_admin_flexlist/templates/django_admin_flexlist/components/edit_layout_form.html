@@ -4,14 +4,14 @@
   onclick="dafCloseEditLayoutDialog()">
   <!-- Clicking the background overlay closes the dialog. Let's prevent clicking the content to close the dialog. -->
   <div class="daf-edit-layout-dialog-content" onclick="event.stopPropagation()">
-    <h1 class="daf-edit-layout-dialog-title">{% translate "Edit Layout" %}</h1>
-    <div class="daf-edit-layout-dialog-content-body">
+    <h1 id="daf-edit-layout-dialog-title" class="daf-edit-layout-dialog-title">{% translate "Edit Layout" %}</h1>
+    <div id="daf-edit-layout-dialog-content-body" class="daf-edit-layout-dialog-content-body">
       <div id="daf-edit-layout-no-fields-message" class="daf-edit-layout-dialog-no-fields-message">
         {% translate "No fields available for customization" %}
       </div>
       <div id="daf-edit-layout-fields-container" class="daf-fields-container"></div>
     </div>
-    <div class="daf-edit-layout-dialog-content-footer">
+    <div id="daf-edit-layout-dialog-content-footer" class="daf-edit-layout-dialog-content-footer">
       <button class="daf-button daf-button-secondary" onclick="dafCloseEditLayoutDialog()">
         {% translate "Cancel" %}
       </button>
