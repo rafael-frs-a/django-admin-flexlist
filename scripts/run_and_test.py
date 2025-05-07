@@ -145,7 +145,9 @@ def main() -> None:
         proc = runserver_and_wait()
 
         try:
-            subprocess.check_call(["pytest", "tests/", "--video=off", "--headed", "-s"])
+            subprocess.check_call(
+                ["pytest", "tests/", "--video=off", "--headed", "-s", "--slowmo", "100"]
+            )
         finally:
             kill_process_tree(proc.pid)
     else:

@@ -2,6 +2,10 @@
 
 ## v0.2.0 (2025-05-06)
 
+### YANKED
+
+- **Yanked on 2025-05-06**: this release introduced a feature incompatible with Django 3.2 and 4.0. Please upgrade to ≥ 1.0.0.
+
 ### Added
 
 - Support to reordering and toggling visibility of apps and models in admin pages.
