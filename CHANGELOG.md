@@ -1,6 +1,12 @@
 # CHANGELOG
 
-## v1.0.0 (2025-05-06)
+## v1.0.1 (2025-05-07)
+
+### Changed
+
+- Bump package version to stable.
+
+## v1.0.0 (2025-05-07)
 
 ### Changed
 
@@ -11,7 +17,7 @@
 
 ### YANKED
 
-- **Yanked on 2025-05-06**: this release introduced a feature incompatible with Django 3.2 and 4.0. Please upgrade to ≥ 1.0.0.
+- **Yanked on 2025-05-07**: this release introduced a feature incompatible with Django 3.2 and 4.0. Please upgrade to ≥ 1.0.0.
 
 ### Added
 
