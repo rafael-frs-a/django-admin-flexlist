@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v1.0.1 (2025-05-07)
+
+### Changed
+
+- Bump package version to stable.
+
 ## v1.0.0 (2025-05-07)
 
 ### Changed
