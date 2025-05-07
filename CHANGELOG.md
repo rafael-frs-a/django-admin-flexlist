@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v1.0.2 (2025-05-07)
+
+### Added
+
+- Include instructions in the README for setting up the feature when the custom template for the index page and the app index page is the same.
+
 ## v1.0.1 (2025-05-07)
 
 ### Changed

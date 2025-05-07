@@ -159,6 +159,30 @@ If you're overriding `"admin/index.html"` or `"admin/app_index.html"`, you can k
 {% endblock %}
 ```
 
+If you use the same custom template for both the index page and the app index page, include the following blocks instead:
+
+```html
+{% block extrastyle %}
+{{ block.super }}
+{% if app_label %}
+{% include "django_admin_flexlist/app_index_head.html" %}
+{% else %}
+{% include "django_admin_flexlist/index_head.html" %}
+{% endif %}
+{% endblock %}
+
+{% block content %}
+{{ block.super }}
+{% if app_label %}
+{% include "django_admin_flexlist/app_index_actions.html" %}
+{% include "django_admin_flexlist/app_index_content.html" %}
+{% else %}
+{% include "django_admin_flexlist/index_actions.html" %}
+{% include "django_admin_flexlist/index_content.html" %}
+{% endif %}
+{% endblock %}
+```
+
 ### 6. Custom styling (optional)
 
 The colors used by the components are defined in `django_admin_flexlist/css/colors.css`. You can override those values with your own, as seen in the demo project's `base/static/base/css/colors.css` file, and adjust your templates to use your custom CSS file, as seen in `templates/admin/base_site.html`.
