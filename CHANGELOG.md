@@ -1,6 +1,17 @@
 # CHANGELOG
 
+## v1.0.0 (2025-05-06)
+
+### Changed
+
+- Remove support for Django 3.2 and 4.0: their `get_app_list` methods lack the optional `app_label` parameter required by this package.
+- Add safeguards to prevent infinite loops in custom admin classes.
+
 ## v0.2.0 (2025-05-06)
+
+### YANKED
+
+- **Yanked on 2025-05-06**: this release introduced a feature incompatible with Django 3.2 and 4.0. Please upgrade to ≥ 1.0.0.
 
 ### Added
 
