@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "django-admin-flexlist"
-version = "1.0.1"
+version = "1.0.2"
 description = "A Django extension that allows users to reorder and toggle visibility of admin list view, app index, and dashboard elements"
 authors = [{ name = "rafael-frs-a" }]
 license = { file = "LICENSE" }
