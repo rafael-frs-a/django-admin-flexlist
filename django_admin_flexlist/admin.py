@@ -15,14 +15,14 @@ class FlexListAdmin(admin.ModelAdmin):  # type: ignore[type-arg]
     change_list_template = "django_admin_flexlist/change_list.html"
 
     @classmethod
-    def __init_subclass__(cls) -> None:
+    def __init_subclass__(cls, **kwargs: t.Any) -> None:
         """
         Initializes subclasses by wrapping the `get_list_display` method to use
         custom list display configurations.
         """
         from django_admin_flexlist.services import FlexListAdminService
 
-        super().__init_subclass__()
+        super().__init_subclass__(**kwargs)
         service = FlexListAdminService()
         original_get_list_display = cls.get_list_display
 
@@ -30,7 +30,16 @@ class FlexListAdmin(admin.ModelAdmin):  # type: ignore[type-arg]
             self: admin.ModelAdmin,  # type: ignore[type-arg]
             request: HttpRequest,
         ) -> list[str]:
-            return service.get_custom_list_display(request, self.model)
+            # Prevent infinite loops
+            if getattr(self, "_daf_skip_custom_list_display", False):
+                return original_get_list_display(self, request)  # type: ignore[return-value]
+
+            self._daf_skip_custom_list_display = True  # type: ignore[attr-defined]
+
+            try:
+                return service.get_custom_list_display(request, self.model)
+            finally:
+                self._daf_skip_custom_list_display = False  # type: ignore[attr-defined]
 
         cls._daf_original_get_list_display = original_get_list_display  # type: ignore[attr-defined]
         cls.get_list_display = wrapped  # type: ignore[assignment]
@@ -55,8 +64,16 @@ class FlexListAdminSite(admin.AdminSite):
     ) -> list[dict[str, t.Any]]:
         from django_admin_flexlist.services import FlexListAdminSiteService
 
-        service = FlexListAdminSiteService()
-        return service.get_custom_app_list(request, app_label)
+        # Prevent infinite loops
+        if getattr(self, "_daf_skip_custom_app_list", False):
+            return super().get_app_list(request, app_label)
+
+        try:
+            self._daf_skip_custom_app_list = True
+            service = FlexListAdminSiteService()
+            return service.get_custom_app_list(request, app_label)
+        finally:
+            self._daf_skip_custom_app_list = False
 
 
 class FlexListAdminConfig(AdminConfig):
