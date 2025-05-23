@@ -229,7 +229,13 @@ class AppModelListDisplayService(utils.Singleton):
             return {}
 
         # Make sure to call `_daf_original_get_list_display` over `get_list_display` to avoid infinite loops
-        original_list_display = model_admin._daf_original_get_list_display(request)
+        model_admin._daf_skip_custom_list_display = True  # type: ignore[attr-defined]
+
+        try:
+            original_list_display = model_admin._daf_original_get_list_display(request)
+        finally:
+            model_admin._daf_skip_custom_list_display = False  # type: ignore[attr-defined]
+
         list_display = self.cast_list_display_to_list_of_strings(original_list_display)
         fields_descriptions = {
             field: self.get_field_description(field, model, model_admin)
