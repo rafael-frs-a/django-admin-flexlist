@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v1.0.3 (2025-05-23)
+
+### Refactored
+
+- Move recursive guard attribute from admin class to custom service method to avoid calling the latter twice.
+- Update E2E test to cover making the staff user a super user and check if permission based field and app properly show up.
+
 ## v1.0.2 (2025-05-07)
 
 ### Added

@@ -318,7 +318,53 @@ class AppTestCase(TestCase):
         self._test_blog_app_index(username)
         self._test_admin_index(username)
 
+    def _test_make_staff_user_superuser(self) -> None:
+        staff_id = 2
+
+        # Test list display
+        self._navigate_to(f"/admin/users/user/{staff_id}/change/")
+        expect(self.page.get_by_role("heading", name="Change user")).to_be_visible()
+
+        assert not self.page.get_by_label("Superuser status").is_checked()
+        self.page.get_by_label("Superuser status").check()
+        self.page.get_by_role("button", name="Save", exact=True).click()
+        expect(
+            self.page.get_by_role("heading", name="Select user to change")
+        ).to_be_visible()
+
+        expected_fields = [
+            FieldCard("Email address", True),
+            FieldCard("Username", True),
+            FieldCard("Full name", True),
+            FieldCard("DOB", True),
+            FieldCard("First name", False),
+            FieldCard("Last name", False),
+            FieldCard("Staff status", True),
+            FieldCard("Superuser status", True),
+            FieldCard("Active", True),
+            FieldCard("Date joined", True),
+            FieldCard("Last login", True),
+        ]
+
+        self._check_list_view_fields(expected_fields)
+
+        # Test index page
+        self._navigate_to("/admin/")
+        expect(
+            self.page.get_by_role("heading", name="Site administration")
+        ).to_be_visible()
+
+        expected_fields = [
+            FieldCard("Users", True),
+            FieldCard("Blog", True),
+            FieldCard("Contact_Messages", False),
+            FieldCard("Authentication and Authorization", True),
+        ]
+
+        self._check_app_list_fields(expected_fields)
+
     def test_app(self) -> None:
         self._test_user(self.admin_username)
         self._logout()
         self._test_user(self.staff_username)
+        self._test_make_staff_user_superuser()

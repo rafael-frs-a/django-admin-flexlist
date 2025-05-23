@@ -34,12 +34,7 @@ class FlexListAdmin(admin.ModelAdmin):  # type: ignore[type-arg]
             if getattr(self, "_daf_skip_custom_list_display", False):
                 return original_get_list_display(self, request)  # type: ignore[return-value]
 
-            self._daf_skip_custom_list_display = True  # type: ignore[attr-defined]
-
-            try:
-                return service.get_custom_list_display(request, self.model)
-            finally:
-                self._daf_skip_custom_list_display = False  # type: ignore[attr-defined]
+            return service.get_custom_list_display(request, self.model)
 
         cls._daf_original_get_list_display = original_get_list_display  # type: ignore[attr-defined]
         cls.get_list_display = wrapped  # type: ignore[assignment]
