@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v1.0.4 (2025-05-26)
+
+### Fixed
+
+- Updated project configuration to support Django 5.2.x.
+
 ## v1.0.3 (2025-05-23)
 
 ### Refactored
