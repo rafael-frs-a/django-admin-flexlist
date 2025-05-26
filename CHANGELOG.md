@@ -4,7 +4,7 @@
 
 ### Fixed
 
-- Updated project configuration to support Django 5.2.x.
+- Update project configuration to support Django 5.2.x, reported by [this](https://github.com/rafael-frs-a/django-admin-flexlist/issues/6) issue.
 
 ## v1.0.3 (2025-05-23)
 
