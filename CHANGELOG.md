@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v1.0.4 (2025-05-26)
+
+### Fixed
+
+- Update project configuration to support Django 5.2.x, reported by [this](https://github.com/rafael-frs-a/django-admin-flexlist/issues/6) issue.
+
 ## v1.0.3 (2025-05-23)
 
 ### Refactored
