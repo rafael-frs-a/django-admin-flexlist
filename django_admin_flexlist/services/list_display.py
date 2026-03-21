@@ -82,8 +82,10 @@ class AppModelListDisplayViewService(utils.Singleton):
         Returns:
             The model class if found, None otherwise
         """
-
-        return apps.get_model(app_label, model_name)
+        try:
+            return apps.get_model(app_label, model_name)
+        except LookupError:
+            return None
 
     def update_list_fields(
         self, request: HttpRequest, app_label: str, model_name: str, data: t.Any
