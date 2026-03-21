@@ -37,15 +37,15 @@ Source = "https://github.com/rafael-frs-a/django-admin-flexlist"
 
 [project.optional-dependencies]
 dev = [
-  "tox~=4.25",
-  "ipython~=8.34",
-  "black~=25.1",
-  "flake8~=7.2",
-  "isort~=6.0",
-  "mypy~=1.15",
-  "django-stubs[compatible-mypy]~=5.1",
-  "pytest~=8.3",
-  "pytest-playwright~=0.7",
+  "tox~=4.50",
+  "ipython~=8.38",
+  "black~=25.9",
+  "flake8~=7.3",
+  "isort~=6.1",
+  "mypy~=1.19",
+  "django-stubs[compatible-mypy]~=5.2",
+  "pytest~=8.4",
+  "pytest-playwright~=0.7.2",
 ]
 
 [tool.setuptools.packages.find]
