@@ -15,6 +15,9 @@ django_admin_flexlist.egg-info/
 # Type checking cache
 .mypy_cache/
 
+# VS Code settings
+.vscode/
+
 # SQLite database
 db.sqlite3
 

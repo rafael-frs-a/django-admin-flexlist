@@ -118,14 +118,28 @@ INSTALLED_APPS = [
 
 This swaps Django's default admin site class with one from the package, adding an "Edit layout" button and support for customizing the app and model lists. All other admin features remain unchanged.
 
+### 6. Overrides
+
+#### 6.1 Custom admin site
+
 If you're already using a custom admin site class, extend it like this:
 
 ```python
-from django_admin_flexlist import FlexListAdminSite
+from django_admin_flexlist import FlexListAdminConfig, FlexListAdminSite
 
 class YourAdminSite(FlexListAdminSite):
     pass
+
+
+class YourAdminConfig(FlexListAdminConfig):
+    default_site = "your_project.path.to.YourAdminSite"
 ```
+
+Then replace `"django.contrib.admin"` in `INSTALLED_APPS` with `"your_project.path.to.YourAdminConfig"`.
+
+This package supports custom admin sites by replacing Django's default admin site. For list view customization, models should be registered on that default admin site.
+
+#### 6.2 Custom index templates
 
 If you're overriding `"admin/index.html"` or `"admin/app_index.html"`, you can keep this feature by including the following blocks:
 
@@ -183,7 +197,7 @@ If you use the same custom template for both the index page and the app index pa
 {% endblock %}
 ```
 
-### 6. Custom styling (optional)
+#### 6.3 Custom styling
 
 The colors used by the components are defined in `django_admin_flexlist/css/colors.css`. You can override those values with your own, as seen in the demo project's `base/static/base/css/colors.css` file, and adjust your templates to use your custom CSS file, as seen in `templates/admin/base_site.html`.
 

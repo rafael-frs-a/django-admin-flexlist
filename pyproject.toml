@@ -4,10 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "django-admin-flexlist"
-version = "1.0.4"
+version = "1.0.5"
 description = "A Django extension that allows users to reorder and toggle visibility of admin list view, app index, and dashboard elements"
 authors = [{ name = "rafael-frs-a" }]
-license = { file = "LICENSE" }
+license = "BSD-3-Clause"
+license-files = ["LICENSE"]
 readme = "README.md"
 keywords = ["django", "admin", "list view", "app index", "dashboard", "toggle visibility", "reorder elements", "drag and drop", "list_display"]
 requires-python = ">=3.10"
@@ -15,7 +16,6 @@ classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Framework :: Django",
   "Intended Audience :: Developers",
-  "License :: OSI Approved :: BSD License",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
@@ -37,15 +37,15 @@ Source = "https://github.com/rafael-frs-a/django-admin-flexlist"
 
 [project.optional-dependencies]
 dev = [
-  "tox~=4.25",
-  "ipython~=8.34",
-  "black~=25.1",
-  "flake8~=7.2",
-  "isort~=6.0",
-  "mypy~=1.15",
-  "django-stubs[compatible-mypy]~=5.1",
-  "pytest~=8.3",
-  "pytest-playwright~=0.7",
+  "tox~=4.50",
+  "ipython~=8.38",
+  "black~=25.9",
+  "flake8~=7.3",
+  "isort~=6.1",
+  "mypy~=1.19",
+  "django-stubs[compatible-mypy]~=5.2",
+  "pytest~=8.4",
+  "pytest-playwright~=0.7.2",
 ]
 
 [tool.setuptools.packages.find]

@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## v1.0.5 (2026-03-21)
+
+### Changed
+
+- Update development dependencies.
+- Update README to clarify support for override instructions.
+
+### Fixed
+
+- Handle invalid app and model names in the list display endpoint.
+- Validate request payloads in views.
+- Remove deprecated license classifier warnings.
+
 ## v1.0.4 (2025-05-26)
 
 ### Fixed

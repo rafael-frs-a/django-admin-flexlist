@@ -29,6 +29,18 @@ class StaffRequiredMixin(UserPassesTestMixin):
         )
 
 
+def get_request_data(request: HttpRequest) -> t.Optional[t.Any]:
+    try:
+        body = json.loads(request.body)
+    except json.JSONDecodeError:
+        return None
+
+    if not isinstance(body, dict):
+        return None
+
+    return body.get("data")
+
+
 class AppModelListDisplayView(StaffRequiredMixin, View):
     """
     View for managing the list display configuration of admin models.
@@ -94,13 +106,13 @@ class AppModelListDisplayView(StaffRequiredMixin, View):
             JsonResponse with status 400 if the request body contains invalid JSON
         """
 
-        try:
-            body = json.loads(request.body)
-        except json.JSONDecodeError:
+        data = get_request_data(request)
+
+        if data is None:
             return JsonResponse({"error": "Invalid JSON"}, status=400)
 
         list_display = self.service.update_list_fields(
-            request, app_label, model_name, body["data"]
+            request, app_label, model_name, data
         )
         return JsonResponse({"data": list_display})
 
@@ -162,12 +174,12 @@ class AppListView(StaffRequiredMixin, View):
             JsonResponse with status 400 if the request body contains invalid JSON
         """
 
-        try:
-            body = json.loads(request.body)
-        except json.JSONDecodeError:
+        data = get_request_data(request)
+
+        if data is None:
             return JsonResponse({"error": "Invalid JSON"}, status=400)
 
-        list_display = self.service.update_app_list(request, body["data"])
+        list_display = self.service.update_app_list(request, data)
         return JsonResponse({"data": list_display})
 
 
@@ -229,10 +241,10 @@ class AppModelListView(StaffRequiredMixin, View):
             JsonResponse with status 400 if the request body contains invalid JSON
         """
 
-        try:
-            body = json.loads(request.body)
-        except json.JSONDecodeError:
+        data = get_request_data(request)
+
+        if data is None:
             return JsonResponse({"error": "Invalid JSON"}, status=400)
 
-        list_display = self.service.update_model_list(request, app_label, body["data"])
+        list_display = self.service.update_model_list(request, app_label, data)
         return JsonResponse({"data": list_display})

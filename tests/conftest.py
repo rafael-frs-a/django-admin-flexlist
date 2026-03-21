@@ -1,4 +1,3 @@
-import tkinter as tk
 import typing as t
 
 import pytest
@@ -16,14 +15,12 @@ def page_timeout() -> int:
 
 @pytest.fixture(scope="session")
 def window_width() -> int:
-    # Let's get 80% of the screen width
-    return int(tk.Tk().winfo_screenwidth() * 0.8)
+    return 1440
 
 
 @pytest.fixture(scope="session")
 def window_height() -> int:
-    # Let's get 80% of the screen height
-    return int(tk.Tk().winfo_screenheight() * 0.8)
+    return 700
 
 
 @pytest.fixture(scope="session")
